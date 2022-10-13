@@ -17,5 +17,9 @@ public class MvcConfiguration implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/templates/", "classpath:/static/")
                 .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
     }
-
+/*
+Spring Boot 는 기본으로 바라보는 정적 자원의 위치가 있다.
+그래서 static 폴더 안 html 파일은 읽을 수 있지만, templates 폴더안에 있는 파일은 읽지 못한거다.
+따라서 MvcConfiguration 파일을 통해 addResourceHandlers를 오버라이딩하면 추가한 부분을 읽을 수 있다
+ */
 }
