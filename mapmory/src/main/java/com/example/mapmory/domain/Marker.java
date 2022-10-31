@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter @Setter
 public class Marker {
     @Id
-    @GeneratedValue @Column(name = "marker_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "marker_id", nullable = false)
     private Long id;
 
     @ManyToOne

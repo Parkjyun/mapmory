@@ -14,16 +14,19 @@ import java.time.LocalDateTime;
 @Setter
 //자동 시간 입력을 위한 어노테이션, MapmoryApplication class에 있는 어노테이션과 연관
 @EntityListeners(AuditingEntityListener.class)
-public class Information {
-    @Id @GeneratedValue
+public class Information {//Board table이라 생각해
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "information_id", nullable = false)
-    private Long Markerid;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "marker_id")
     private Marker marker;
 
     private String comment;
+
+
+    private Long ImageId;
 
     @CreatedDate
     private LocalDateTime createDate;
