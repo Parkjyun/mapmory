@@ -1,39 +1,76 @@
 package com.example.mapmory.service;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import org.apache.tomcat.util.json.JSONParser;
-import org.apache.tomcat.util.json.ParseException;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.springframework.stereotype.Service;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+@Service
 public class Token {
-
-    private String requestURL ="https://kauth.kakao.com/oauth/token";
-    public String generateAccessToken(String code) throws IOException {
-        String accessToken ="";
-
-        URL url = new URL(requestURL);
-        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+    public String getAccessToken(String authorize_code) {
+        String access_Token = "";
+        String refresh_Token = "";
+        String reqURL = "https://kauth.kakao.com/oauth/token";
 
         try {
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setDoInput(true);
+            URL url = new URL(reqURL);
 
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(httpURLConnection.getOutputStream()));
-            StringBuilder stringBuilder = new StringBuilder();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            // POST 요청을 위해 기본값이 false인 setDoOutput을 true로
 
-            stringBuilder.append("grant_type=authorization_code");
-            stringBuilder.append("&client_id=2aad40910868e3c5fa9594f8de34a07b");
-            stringBuilder.append("&redirect_uri=http://localhost:8080/mapmory/kakaologin");
-            stringBuilder.append("&code=" + code);
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            // POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
 
-            bufferedWriter.write(stringBuilder.toString());
-            bufferedWriter.flush();
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+            StringBuilder sb = new StringBuilder();
+            sb.append("grant_type=authorization_code");
 
+            sb.append("&client_id=REST_API키"); //본인이 발급받은 key
+            sb.append("&redirect_uri=REDIRECT_URI"); // 본인이 설정한 주소
 
+            sb.append("&code=" + authorize_code);
+            bw.write(sb.toString());
+            bw.flush();
+
+            // 결과 코드가 200이라면 성공
+            int responseCode = conn.getResponseCode();
+            System.out.println("responseCode : " + responseCode);
+
+            // 요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line = "";
+            String result = "";
+
+            while ((line = br.readLine()) != null) {
+                result += line;
+            }
+            System.out.println("response body : " + result);
+
+            // Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(result);
+
+            access_Token = element.getAsJsonObject().get("access_token").getAsString();
+            refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
+
+            System.out.println("access_token : " + access_Token);
+            System.out.println("refresh_token : " + refresh_Token);
+
+            br.close();
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return access_Token;
     }
-
-
 }
