@@ -12,75 +12,45 @@ import java.util.HashMap;
 
 @Service
 public class Token {
-    public String getAccessToken(String authorize_code) {
-        String access_Token = "";
-        String refresh_Token = "";
-        String reqURL = "https://kauth.kakao.com/oauth/token";
+    private static final String requestURL = "https://kauth.kakao.com/oauth/token";
+    private String access_Token = "";
+    public String getAccessToken(String code) {
         try {
-            URL url = new URL(reqURL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-            StringBuilder sb = new StringBuilder();
-            sb.append("grant_type=authorization_code");
-            sb.append("&client_id=fc231655583778a23c2eba6fcbd54a3f"); //본인이 발급받은 key
-            sb.append("&redirect_uri=http://localhost:8080/mapmory/callbackKakao"); // 본인이 설정한 주소
-            sb.append("&code=" + authorize_code);
-            bw.write(sb.toString());
-            bw.flush();
-            int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            URL url = new URL(requestURL);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(httpURLConnection.getOutputStream()));
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("grant_type=authorization_code");
+            stringBuilder.append("&client_id=fc231655583778a23c2eba6fcbd54a3f"); //본인이 발급받은 key
+            stringBuilder.append("&redirect_uri=http://localhost:8080/mapmory/callbackKakao"); // 본인이 설정한 주소
+            stringBuilder.append("&code=" + code);
+
+            bufferedWriter.write(stringBuilder.toString());
+            bufferedWriter.flush();
+
+            int responseCode = httpURLConnection.getResponseCode();
+            System.out.println("서버응답 : " + responseCode);
+            BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
             String line = "";
             String result = "";
             while ((line = br.readLine()) != null) {
                 result += line;
             }
-            System.out.println("response body : " + result);
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
             access_Token = element.getAsJsonObject().get("access_token").getAsString();
-            refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
-            System.out.println("access_token : " + access_Token);
-            System.out.println("refresh_token : " + refresh_Token);
             br.close();
-            bw.close();
+            bufferedWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return access_Token;
     }
 
-    public HashMap<String, Object> getUserInfo(String access_Token) {
-        HashMap<String, Object> userInfo = new HashMap<String, Object>();
-        String reqURL = "https://kapi.kakao.com/v2/user/me";
-        try {
-            URL url = new URL(reqURL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Authorization", "Bearer " + access_Token);
-            int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            String result = "";
-            while ((line = br.readLine()) != null) {
-                result += line;
-            }
-            System.out.println("response body : " + result);
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
-            JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
-            JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
-            String nickname = properties.getAsJsonObject().get("nickname").getAsString();
-            String email = kakao_account.getAsJsonObject().get("email").getAsString();
-            userInfo.put("nickname", nickname);
-            userInfo.put("email", email);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return userInfo;
 
-    }
 }

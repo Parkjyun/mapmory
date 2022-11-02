@@ -1,6 +1,7 @@
 package com.example.mapmory.controller;
 
 import com.example.mapmory.service.Token;
+import com.example.mapmory.service.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,14 +17,15 @@ public class OauthController {
     @Autowired
     private Token token;
 
+    @Autowired
+    private UserInfo info;
+
     @RequestMapping(value="/callbackKakao", method= RequestMethod.GET)
     public void enterKakaoLoginPage(@RequestParam(value = "code", required = false) String code) throws Exception {
-        System.out.println("code:" + code);
         String access_Token = token.getAccessToken(code);
-        HashMap<String, Object> userInfo = token.getUserInfo(access_Token);
-        System.out.println("###access_Token#### : " + access_Token);
-        System.out.println("###nickname#### : " + userInfo.get("nickname"));
-        System.out.println("###email#### : " + userInfo.get("email"));
+        HashMap<String, Object> userInfo = info.getUserInfo(access_Token);
+        System.out.println("이름 : " + userInfo.get("nickname"));
+        System.out.println("이메일 : " + userInfo.get("email"));
     }
 
 }
