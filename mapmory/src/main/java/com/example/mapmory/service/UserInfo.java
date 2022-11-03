@@ -16,12 +16,13 @@ import java.util.HashMap;
 public class UserInfo {
     private static final String reqURL = "https://kapi.kakao.com/v2/user/me";
     private static final HashMap<String, Object> userInfo = new HashMap<String, Object>();
+
     public HashMap<String, Object> getUserInfo(String access_Token) {
         try {
             URL url = new URL(reqURL);
 
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestProperty("Authorization", "Bearer " + access_Token);
+            httpURLConnection.setRequestProperty("Authorization", "Bearer " + access_Token);//헤더값
             httpURLConnection.setRequestMethod("GET");
 
             int responseCode = httpURLConnection.getResponseCode();
