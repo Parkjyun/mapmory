@@ -9,22 +9,28 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 
 @Service
 public class UserInfo {
-    private static final String reqURL = "https://kapi.kakao.com/v2/user/me";
+    private static final String requestURL = "https://kapi.kakao.com/v2/user/me";
     private static final HashMap<String, Object> userInfo = new HashMap<String, Object>();
+    private URL url = new URL(requestURL);
+    private HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
-    public HashMap<String, Object> getUserInfo(String access_Token) {
+    public UserInfo() throws IOException {
+    }
+
+    public void setHttpURLConnection(String accessToken) throws ProtocolException {
+        httpURLConnection.setRequestProperty("Authorization", "Bearer " + accessToken);//헤더값
+        httpURLConnection.setRequestMethod("GET");
+    }
+    public HashMap<String, Object> getUserInfo(String accessToken) {
         try {
-            URL url = new URL(reqURL);
 
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestProperty("Authorization", "Bearer " + access_Token);//헤더값
-            httpURLConnection.setRequestMethod("GET");
-
+            setHttpURLConnection(accessToken);
             int responseCode = httpURLConnection.getResponseCode();
             System.out.println("서버응답코드 : " + responseCode);
 
@@ -37,7 +43,7 @@ public class UserInfo {
             System.out.println("유저정보 : " + result);
 
             JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
+            JsonElement element = JsonParser.parseString(result);
             JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
 
             JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();

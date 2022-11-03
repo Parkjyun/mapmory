@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 @Service
@@ -18,7 +17,6 @@ public class Token {
 
     public Token() throws IOException {
     }
-
 
     public void setHttpConnection() throws IOException {
         httpURLConnection.setDoOutput(true);
@@ -36,30 +34,33 @@ public class Token {
         return stringBuilder.toString();
     }
 
-    public String getAccessToken(String code) {
-        try {
-            setHttpConnection();
+    public void setBufferWriter(String code) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(httpURLConnection.getOutputStream()));
+        bufferedWriter.write(appendToken(code));
+        bufferedWriter.flush();
+        bufferedWriter.close();
+    }
 
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(httpURLConnection.getOutputStream()));
-            bufferedWriter.write(appendToken(code));
-            bufferedWriter.flush();
-
-            int responseCode = httpURLConnection.getResponseCode();
-            System.out.println("서버응답 : " + responseCode);
-            BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-            String line = "";
-            String result = "";
-            while ((line = br.readLine()) != null) {
-                result += line;
-            }
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
-            access_Token = element.getAsJsonObject().get("access_token").getAsString();
-            br.close();
-            bufferedWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String getTokenFromKakao() throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+        String line = "";
+        String result = "";
+        while ((line = bufferedReader.readLine()) != null) {
+            result += line;
         }
+        return result;
+    }
+
+    public String getAccessToken(String code) throws IOException {
+
+        setHttpConnection();
+        setBufferWriter(code);
+        int responseCode = httpURLConnection.getResponseCode();
+        System.out.println("서버응답 : " + responseCode);
+
+        JsonElement element = JsonParser.parseString(getTokenFromKakao());
+        access_Token = element.getAsJsonObject().get("access_token").getAsString();
+
         return access_Token;
     }
 
