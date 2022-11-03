@@ -5,6 +5,16 @@ import Home from "./pages";
 import SigninPage from "./pages/signin";
 
 function App() {
+  const [message, setMessage]=useState([]);
+  useEffect(()=>{
+    fetch("/hello")
+        .then((res)=>{
+          return res.json();
+        })
+        .then((data)=>{
+            setMessage(data);
+        });
+  },[]);
   return (
     <Router>
       <Routes>
