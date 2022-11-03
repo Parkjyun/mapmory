@@ -1,5 +1,6 @@
 package com.example.mapmory.service;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -9,7 +10,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -23,29 +23,29 @@ public class UserInfo {
     public UserInfo() throws IOException {
     }
 
-    public void setHttpURLConnection(String accessToken) throws ProtocolException {
+    public int setHttpURLConnection(String accessToken) throws IOException {
         httpURLConnection.setRequestProperty("Authorization", "Bearer " + accessToken);//헤더값
         httpURLConnection.setRequestMethod("GET");
+        return httpURLConnection.getResponseCode();
     }
-    public HashMap<String, Object> getUserInfo(String accessToken) {
-        try {
 
-            setHttpURLConnection(accessToken);
-            int responseCode = httpURLConnection.getResponseCode();
-            System.out.println("서버응답코드 : " + responseCode);
+    public String getUserInfoFromKaKao() throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+        String line = "";
+        String result = "";
+        while ((line = br.readLine()) != null) {
+            result += line;
+        }
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-            String line = "";
-            String result = "";
-            while ((line = br.readLine()) != null) {
-                result += line;
-            }
-            System.out.println("유저정보 : " + result);
-
+        return result;
+    }
+    public HashMap<String, Object> getUserInfo(String accessToken) throws IOException {
+            System.out.println("서버응답:" + setHttpURLConnection(accessToken));
+            System.out.println("유저정보 : " + getUserInfoFromKaKao());
             JsonParser parser = new JsonParser();
-            JsonElement element = JsonParser.parseString(result);
-            JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
+            JsonElement element = parser.parseString(getUserInfoFromKaKao());
 
+            JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
             JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
             String nickname = properties.getAsJsonObject().get("nickname").getAsString();
             String email = kakao_account.getAsJsonObject().get("email").getAsString();
@@ -53,13 +53,7 @@ public class UserInfo {
             userInfo.put("nickname", nickname);
             userInfo.put("email", email);
 
-            br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return userInfo;
-
     }
-
 }
 
