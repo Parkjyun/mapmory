@@ -11,6 +11,6 @@ public class MainController {
     @GetMapping("/kakaomain")
     public String showMainView(){
 
-        return "Mapmory_Home/public/index";
+        return "Mapmory_Home/src/index";
     }
 }
