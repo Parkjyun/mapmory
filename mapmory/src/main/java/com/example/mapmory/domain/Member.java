@@ -14,6 +14,7 @@ public class Member {
     @Column(name = "member_id", nullable = false)
     private Long id;
 
+    private String name;
     private String email;
 }
 

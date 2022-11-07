@@ -1,7 +1,6 @@
 package com.example.mapmory.dto;
 
 import com.example.mapmory.domain.Image;
-
 import lombok.*;
 
 @Getter

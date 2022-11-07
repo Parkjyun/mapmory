@@ -34,4 +34,5 @@ public class Information {//Board table이라 생각해
     @LastModifiedDate
     private LocalDateTime lastUpdatedDate;
 
+
 }
