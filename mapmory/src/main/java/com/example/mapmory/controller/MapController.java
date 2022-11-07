@@ -6,12 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Controller
-@RequestMapping("/mapmory")
 public class MapController {
-
-    @GetMapping("/kakaomap")
-    public String enterKakaoMapWeb(){
-
+    @GetMapping(value = "mapmory/kakaomap")
+    public String enterKakaoMapPage(){
         return "kakaomap";
     }
 

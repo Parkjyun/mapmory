@@ -11,5 +11,9 @@
         <module name="mapmory.mapmory.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="mapmory.mapmory.main~1" target="11" />
+      <module name="mapmory.mapmory.test~1" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
