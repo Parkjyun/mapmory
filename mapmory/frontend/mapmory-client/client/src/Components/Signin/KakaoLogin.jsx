@@ -8,6 +8,17 @@ export default function KakaoLogin() {
   const navigate = useNavigate();
   const KAKAO_CODE = location.search.split("=")[1];
 
+  useEffect(() => {
+    fetch(`http://localhost:8080/mapmory/callbackKakao?code=${KAKAO_CODE}`, {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        localStorage.setItem("token", data.token);
+        navigate("/");
+      });
+  }, []);
+
   const getKakaoToken = () => {
     fetch(`https://kauth.kakao.com/oauth/token`, {
       method: "POST",

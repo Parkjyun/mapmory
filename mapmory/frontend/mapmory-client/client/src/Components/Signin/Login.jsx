@@ -37,7 +37,7 @@ export default function Signin() {
             Sign in
           </Typography>
           <Box component='form' noValidate sx={{ mt: 1 }}>
-            {/* <TextField
+            <TextField
               label='Email Address'
               name='email'
               margin='normal'
@@ -53,7 +53,7 @@ export default function Signin() {
               required
               fullWidth
               autoComplete='current-password'
-            ></TextField> */}
+            ></TextField>
             <LinkR onClick={handleLogin}>
               <p>카카오로 바로 시작</p>
             </LinkR>
