@@ -145,7 +145,7 @@ export default function Map() {
             <div className='card'>
               <label>장소</label>
               <h4>용산시청</h4>
-              <LinkR className='cardBtn' to='/diary/post'>
+              <LinkR className='cardBtn' to='/diary/posts'>
                 다이어리로 이동하기
               </LinkR>
               <label>정보</label>

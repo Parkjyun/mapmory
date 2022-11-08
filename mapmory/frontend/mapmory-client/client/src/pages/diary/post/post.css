@@ -16,16 +16,6 @@
   align-items: center;
 }
 
-.postCat {
-  font-family: "Playfair Display", serif;
-  font-size: 11px;
-  color: #be9656;
-  line-height: 20px;
-  margin-top: 10px;
-  margin-right: 10px;
-  cursor: pointer;
-}
-
 .postTitle {
   font-family: "Playfair Display", serif;
   font-size: 24px;
@@ -36,7 +26,6 @@
 
 .postDate {
   font-family: "Playfair Display", serif;
-  font-style: italic;
   font-size: 13px;
   color: #999;
   margin-top: 15px;

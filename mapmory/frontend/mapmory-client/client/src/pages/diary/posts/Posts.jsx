@@ -1,11 +1,12 @@
 import React from "react";
+import DiaryNavBar from "../diaryNavBar/DiaryNavBar";
 import Post from "../post/Post";
-import Sidebar from "../sidebar/Sidebar";
-import "./post.css";
+import "./posts.css";
 
 export default function Posts() {
   return (
-    <div className='home' style={{ display: "flex" }}>
+    <>
+      <DiaryNavBar />
       <div className='posts'>
         <Post />
         <Post />
@@ -20,8 +21,8 @@ export default function Posts() {
         <Post />
         <Post />
         <Post />
+        <Post />
       </div>
-      <Sidebar />
-    </div>
+    </>
   );
 }
