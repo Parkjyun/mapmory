@@ -3,12 +3,15 @@ import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import { useEffect, useState } from "react";
 import RoomIcon from "@mui/icons-material/Room";
 import axios from "axios";
-import { format } from "timeago.js";
+import * as timeago from "timeago.js";
+import TimeAgo from "timeago-react";
+import pt_BR from "timeago.js/lib/lang/pt_BR";
 import Register from "../Components/Register/Register";
 import Login from "../Components/Signin/Login";
 
-function Map() {
+export default function Map() {
   const myStorage = window.localStorage;
+  timeago.register("pt_BR", pt_BR);
   const [currentUsername, setCurrentUsername] = useState(
     myStorage.getItem("user")
   );
@@ -128,7 +131,9 @@ function Map() {
                   <h4 className='place'>{p.title}</h4>
                   <label>리뷰</label>
                   <p className='desc'>{p.desc}</p>
-                  <span className='date'>{format(p.createdAt)}</span>
+                  <span className='date'>
+                    <TimeAgo datetime={p.createdAt} local='pt_BR' />
+                  </span>
                   <button className='cardBtn'>다이어리 작성하기</button>
                   <button className='cardDeleteBtn' onClick={handleDelete}>
                     장소 삭제하기
@@ -212,5 +217,3 @@ function Map() {
     </div>
   );
 }
-
-export default Map;

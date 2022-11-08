@@ -7,6 +7,7 @@ import Single from "./pages/diary/single/Single";
 import Signin from "./Components/Signin/Login";
 import Signup from "./Components/Register/Register";
 import KakaoLogin from "./Components/Signin/KakaoLogin";
+// import Map from "./pages/Map";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path='/' element={<Home />} exact />
         <Route path='/signin' element={<Signin />} exact />
         <Route path='/signup' element={<Signup />} exact />
+        {/* <Route path='/map' element={<Map />} exact /> */}
         <Route path='/diary' element={<Posts />} exact />
         <Route path='/diary/post' element={<Single />}></Route>
         <Route path='/mapmory/callbackKakao' element={<KakaoLogin />}></Route>
